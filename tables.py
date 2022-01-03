@@ -1,6 +1,9 @@
+import random
 import sys
 import cx_Oracle
 from PyQt5.QtWidgets import QTableWidgetItem, QListWidgetItem
+
+stocuri = []
 
 # This is the path to the ORACLE client files
 lib_dir = r'C:\Users\monic\Desktop\AN III\BD\model_tema_de_casa\model_tema_de_casa\instantclient_21_3'
@@ -44,9 +47,9 @@ class Meniu:
             for column_number, data in enumerate(row_data):
                 list_widget_window.insertItem(row_number, QListWidgetItem(str(data)))
 
-
     @staticmethod
-    def selection_changed(list_widget_window, table_widget_window, btn_adauga, list_view_selectii, lbl_selectii, btn_plaseaza_cmd):
+    def selection_changed(list_widget_window, table_widget_window, btn_adauga, list_view_selectii, lbl_selectii,
+                          btn_plaseaza_cmd, lbl_total_plata):
 
         table_widget_window.clear()
         table_widget_window.show()
@@ -54,14 +57,15 @@ class Meniu:
         list_view_selectii.show()
         lbl_selectii.show()
         btn_plaseaza_cmd.show()
+        lbl_total_plata.show()
 
         table_widget_window.setHorizontalHeaderLabels(["Produs", "Pret", "Ingrediente"])
         header = table_widget_window.horizontalHeader()
-        #header.setSectionResizeMode(0, PyQt5.QtWidgets.QHeaderView.ResizeToContents)
+        # header.setSectionResizeMode(0, PyQt5.QtWidgets.QHeaderView.ResizeToContents)
         table_widget_window.setColumnWidth(0, 350)
         table_widget_window.setColumnWidth(1, 10)
         table_widget_window.setColumnWidth(2, 377)
-        #header.setSectionResizeMode(2, PyQt5.QtWidgets.QHeaderView.ResizeToContents)
+        # header.setSectionResizeMode(2, PyQt5.QtWidgets.QHeaderView.ResizeToContents)
         global text
         items_text_list = [str(list_widget_window.item(i).text()) for i in range(list_widget_window.count())]
         for item in items_text_list:
@@ -100,3 +104,34 @@ class Meniu:
                 text += str(i) + ', '
             else:
                 text += str(i)
+
+    def plaseaza_comanda(self, items, lbl_succes):
+        global stocuri
+        for item in items:
+            produs = item.split(",")[0]
+            cantitate = int(item.split("buc.")[0].split(", ")[1])
+            nr_masa = random.randint(1, 5)
+            query = f'INSERT INTO Comenzi(id_comanda, data_comanda, nr_masa) VALUES(NULL,SYSDATE,{nr_masa})'
+            results.execute(query)
+
+            query = 'INSERT INTO produse_comenzi(nr_produse_comandate, produse_nr_produs, comenzi_id_comanda) \
+                        VALUES (%d, (SELECT id_produs from produse where nume_produs=\'%s\' ), (SELECT max(id_comanda) from comenzi))' % (
+            cantitate, produs)
+            results.execute(query)
+
+            results.execute("commit")
+            query = 'SELECT MIN(FLOOR((SELECT i.stoc_ingredient/r.cantitate_ingr FROM DUAL))) as nr_preparate_disponibile \
+                        FROM Produse p, Retete r, Ingrediente i \
+                        WHERE p.id_produs = r.Produse_id_produs and i.id_ingredient = r.Ingrediente_id_ingr and p.nume_produs=\'%s\' \
+                        GROUP BY p.nume_produs' % produs
+            results.execute(query)
+            res = results.fetchall()
+            print("stoc produs = " + str(res[0][0]))
+            stocuri.append(int(res[0][0]))
+            if all(stocuri) > 0:
+                lbl_succes.show()
+            else:
+                lbl_succes.setText("Stoc insuficient")
+
+
+

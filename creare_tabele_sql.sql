@@ -260,6 +260,17 @@ BEGIN
 END;
 /
 
+CREATE SEQUENCE comenzi_id_comanda_seq START WITH 1 NOCACHE ORDER;
+
+CREATE OR REPLACE TRIGGER comenzi_id_comanda_trg BEFORE
+    INSERT ON comenzi
+    FOR EACH ROW
+    WHEN ( new.id_comanda IS NULL )
+BEGIN
+    :new.id_comanda := comenzi_id_comanda_seq.nextval;
+END;
+/
+
 CREATE SEQUENCE ingrediente_id_ingredient_seq START WITH 1 NOCACHE ORDER;
 
 CREATE OR REPLACE TRIGGER ingrediente_id_ingredient_trg BEFORE
