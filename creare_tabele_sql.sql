@@ -113,6 +113,19 @@ ALTER TABLE ingrediente ADD CONSTRAINT ingrediente_pk PRIMARY KEY ( id_ingredien
 
 ALTER TABLE ingrediente ADD CONSTRAINT ingrediente_nume_ingr_un UNIQUE ( nume_ingredient);
 
+
+------------------COMENZI-----------
+
+CREATE TABLE COMENZI (
+    id_comanda      NUMBER(5) NOT NULL,
+    data_comanda    DATE DEFAULT sysdate NOT NULL,
+    nr_masa         NUMBER(2)
+);
+
+ALTER TABLE comenzi ADD CONSTRAINT nr_masa_ck CHECK ( nr_masa > 0 );
+
+ALTER TABLE comenzi ADD CONSTRAINT comenzi_pk PRIMARY KEY ( id_comanda );
+
 --------------------RETETE------------
 drop table retete;
 CREATE TABLE RETETE (
@@ -125,7 +138,19 @@ ALTER TABLE retete ADD CONSTRAINT cantitate_ingr_ck CHECK ( cantitate_ingr > 0 )
 
 ALTER TABLE retete ADD CONSTRAINT retete_pk PRIMARY KEY ( produse_id_produs,
                                                           ingrediente_id_ingr );
-                                                          
+                  
+-------------------PRODUSE COMENZI---------
+
+CREATE TABLE PRODUSE_COMENZI (
+    nr_produse_comandate    NUMBER(2) NOT NULL,
+    produse_nr_produs       NUMBER(4) NOT NULL,
+    comenzi_id_comanda      NUMBER(9) NOT NULL
+);
+
+ALTER TABLE produse_comenzi ADD CONSTRAINT nr_produse_comandate_ck CHECK ( nr_produse_comandate > 0 );
+
+ALTER TABLE produse_comenzi ADD CONSTRAINT produse_comenzi_pk PRIMARY KEY ( produse_nr_produs,
+                                                                            comenzi_id_comanda );
 -----------CONSTRANGERI FOREIGN KEY---------------
 ----CATEGORII MENIU-----
 
@@ -167,6 +192,17 @@ ALTER TABLE retete
             ON DELETE CASCADE
     NOT DEFERRABLE;
     
+--PRODUSE COMENZI--
+ALTER TABLE produse_comenzi
+    ADD CONSTRAINT produse_comenzi_comenzi_fk FOREIGN KEY ( comenzi_id_comanda )
+        REFERENCES comenzi ( id_comanda )
+            ON DELETE CASCADE
+    NOT DEFERRABLE;
+
+ALTER TABLE produse_comenzi
+    ADD CONSTRAINT produse_comenzi_produse_fk FOREIGN KEY ( produse_nr_produs )
+        REFERENCES produse ( id_produs )
+    NOT DEFERRABLE;
     
 ----STOCURI PRODUS-----
 ALTER TABLE stocuri_produs
@@ -270,4 +306,5 @@ BEGIN
     :new.id_tip := tipuri_aliment_id_tip_seq.nextval;
 END;
 /
+
 

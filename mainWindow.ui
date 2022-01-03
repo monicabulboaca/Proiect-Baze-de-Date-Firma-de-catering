@@ -75,10 +75,10 @@
    <widget class="QTableWidget" name="tableWidget">
     <property name="geometry">
      <rect>
-      <x>350</x>
+      <x>240</x>
       <y>120</y>
-      <width>701</width>
-      <height>661</height>
+      <width>770</width>
+      <height>401</height>
      </rect>
     </property>
     <column>
@@ -129,9 +129,63 @@
      <rect>
       <x>10</x>
       <y>120</y>
-      <width>331</width>
+      <width>221</width>
       <height>401</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="list_view_selectii">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>580</y>
+      <width>1001</width>
+      <height>181</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_adauga">
+    <property name="geometry">
+     <rect>
+      <x>1030</x>
+      <y>170</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Adauga selectia in cos</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_selectii">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>550</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Selectiile tale</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_plaseaza_cmd">
+    <property name="geometry">
+     <rect>
+      <x>1050</x>
+      <y>620</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plaseaza comanda</string>
     </property>
    </widget>
   </widget>

@@ -26,50 +26,61 @@ results = con.cursor()
 
 
 class Meniu:
-    f = open(r"C:\Users\monic\Desktop\AN III\BD\PROIECT - Firma de catering\files\fel_principal.txt", "r")
 
     def __init__(self):
         self.display_window = None
         self.dialog_box = None
-        self.products = self.f.read().split("\n")
-        self.f.close()
         self.listWidget_wnd = None
         self.tableWidget_wnd = None
 
     @staticmethod
-    def loadData(listWidget_window, nr_meniu):
-        listWidget_window.clear()
+    def load_data(list_widget_window, nr_meniu):
+        list_widget_window.clear()
+        list_widget_window.show()
         query = 'SELECT NUME_CATEGORIE FROM CATEGORII WHERE MENIURI_NR_MENIU=%s' % nr_meniu
         results = con.cursor()
         results.execute(query)
         for row_number, row_data in enumerate(results):
             for column_number, data in enumerate(row_data):
-                listWidget_window.insertItem(row_number, QListWidgetItem(str(data)))
+                list_widget_window.insertItem(row_number, QListWidgetItem(str(data)))
+
 
     @staticmethod
-    def selection_changed(listWidget_window, tableWidget_window):
+    def selection_changed(list_widget_window, table_widget_window, btn_adauga, list_view_selectii, lbl_selectii, btn_plaseaza_cmd):
+
+        table_widget_window.clear()
+        table_widget_window.show()
+        btn_adauga.show()
+        list_view_selectii.show()
+        lbl_selectii.show()
+        btn_plaseaza_cmd.show()
+
+        table_widget_window.setHorizontalHeaderLabels(["Produs", "Pret", "Ingrediente"])
+        header = table_widget_window.horizontalHeader()
+        #header.setSectionResizeMode(0, PyQt5.QtWidgets.QHeaderView.ResizeToContents)
+        table_widget_window.setColumnWidth(0, 350)
+        table_widget_window.setColumnWidth(1, 10)
+        table_widget_window.setColumnWidth(2, 377)
+        #header.setSectionResizeMode(2, PyQt5.QtWidgets.QHeaderView.ResizeToContents)
         global text
-
-        items_text_list = [str(listWidget_window.item(i).text()) for i in range(listWidget_window.count())]
+        items_text_list = [str(list_widget_window.item(i).text()) for i in range(list_widget_window.count())]
         for item in items_text_list:
-            if listWidget_window.currentItem().text() == item:
-
+            if list_widget_window.currentItem().text() == item:
                 query = 'select p.nume_produs, p.pret from categorii_produse cp, produse p \
                 where cp.categorii_nr_categorie= (select id_categorie from categorii where \
                 nume_categorie=\'%s\') and cp.produse_nr_produs = p.id_produs' % item
                 results.execute(query)
                 r = results.fetchall()
-                tableWidget_window.setRowCount(0)
+                table_widget_window.setRowCount(0)
+
                 row_number = 0
                 for row_data in enumerate(r):
-                    tableWidget_window.insertRow(row_number)
-                    tableWidget_window.setItem(row_number, 0, QTableWidgetItem(str(row_data[1][0])))
-                    tableWidget_window.setItem(row_number, 1, QTableWidgetItem(str(row_data[1][1])))
-
+                    table_widget_window.insertRow(row_number)
+                    table_widget_window.setItem(row_number, 0, QTableWidgetItem(str(row_data[1][0])))
+                    table_widget_window.setItem(row_number, 1, QTableWidgetItem(str(row_data[1][1])))
                     nume_produs = str(row_data[1][0])
-
                     Meniu.get_ingredients(nume_produs)
-                    tableWidget_window.setItem(row_number, 2, QTableWidgetItem(text))
+                    table_widget_window.setItem(row_number, 2, QTableWidgetItem(text))
                     row_number += 1
 
     @staticmethod
