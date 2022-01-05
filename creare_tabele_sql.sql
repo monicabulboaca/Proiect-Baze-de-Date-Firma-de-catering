@@ -102,11 +102,7 @@ CREATE TABLE INGREDIENTE (
     stoc_ingredient         NUMBER(5, 2) NOT NULL,
     tipuri_aliment_id_tip   NUMBER(2)
 );
-
-ALTER TABLE ingrediente
-    ADD CONSTRAINT nume_ingredient_ck CHECK ( REGEXP_LIKE ( nume_ingredient,
-                                                            '^[a-z]+(\ [a-z]+)*$' ) );
-                                                            
+                                                       
 ALTER TABLE ingrediente ADD CONSTRAINT stoc_ingredient_ck CHECK ( stoc_ingredient > 0 );
 
 ALTER TABLE ingrediente ADD CONSTRAINT ingrediente_pk PRIMARY KEY ( id_ingredient );
@@ -318,4 +314,4 @@ BEGIN
 END;
 /
 
-
+commit;

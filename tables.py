@@ -104,6 +104,7 @@ class Meniu:
                 text += str(i) + ', '
             else:
                 text += str(i)
+        return lista_ingr
 
     def plaseaza_comanda(self, items, lbl_succes):
         global stocuri
@@ -114,24 +115,61 @@ class Meniu:
             query = f'INSERT INTO Comenzi(id_comanda, data_comanda, nr_masa) VALUES(NULL,SYSDATE,{nr_masa})'
             results.execute(query)
 
-            query = 'INSERT INTO produse_comenzi(nr_produse_comandate, produse_nr_produs, comenzi_id_comanda) \
-                        VALUES (%d, (SELECT id_produs from produse where nume_produs=\'%s\' ), (SELECT max(id_comanda) from comenzi))' % (
-            cantitate, produs)
-            results.execute(query)
+            # ingredientele necesare pt produs
+            ingr = self.get_ingredients(produs)
+            produs_pe_stoc = True
+            produsul_indisponibil = ''
 
-            results.execute("commit")
-            query = 'SELECT MIN(FLOOR((SELECT i.stoc_ingredient/r.cantitate_ingr FROM DUAL))) as nr_preparate_disponibile \
-                        FROM Produse p, Retete r, Ingrediente i \
-                        WHERE p.id_produs = r.Produse_id_produs and i.id_ingredient = r.Ingrediente_id_ingr and p.nume_produs=\'%s\' \
-                        GROUP BY p.nume_produs' % produs
-            results.execute(query)
-            res = results.fetchall()
-            print("stoc produs = " + str(res[0][0]))
-            stocuri.append(int(res[0][0]))
-            if all(stocuri) > 0:
+            # verific stocul pentru fiecare ingredient
+            for i in ingr:
+                print()
+                print('INGREDIENT: ' + i)
+                query = 'select stoc_ingredient from ingrediente where nume_ingredient=\'%s\'' % i
+                results.execute(query)
+                res = results.fetchall()
+                stoc = int(res[0][0])
+                print('STOC: ' + str(stoc))
+
+                # verific daca cantitate ingr necesar > stoc ingredient
+                query = 'select cantitate_ingr from retete where produse_id_produs = (select id_produs from produse where nume_produs = \'%s\') \
+                    and ingrediente_id_ingr= (select id_ingredient from ingrediente where nume_ingredient = \'%s\')' % (
+                produs, i)
+                results.execute(query)
+                res = results.fetchall()
+                cantitate_ingr = float(res[0][0])
+                print('CANTITATE: ' + str(cantitate_ingr))
+
+                if cantitate_ingr > stoc:
+                    produs_pe_stoc = False
+                    produsul_indisponibil = produs
+
+            if produs_pe_stoc:
+                query = 'INSERT INTO produse_comenzi(nr_produse_comandate, produse_nr_produs, comenzi_id_comanda) \
+                            VALUES (%d, (SELECT id_produs from produse where nume_produs=\'%s\' ), (SELECT max(id_comanda) from comenzi))' % (
+                    cantitate, produs)
+                results.execute(query)
+                results.execute("commit")
+
+                # update la ingrediente
+                query = 'UPDATE Ingrediente i \
+                SET stoc_ingredient = stoc_ingredient - %d * (SELECT r.cantitate_ingr FROM Retete r WHERE r.Produse_id_produs = (SELECT id_produs FROM Produse WHERE nume_produs = \'%s\') and r.Ingrediente_id_ingr = i.id_ingredient) \
+                WHERE EXISTS (SELECT 1 FROM Retete r WHERE Produse_id_produs = (SELECT id_produs FROM Produse WHERE nume_produs = \'%s\') and r.Ingrediente_id_ingr = i.id_ingredient)' % (cantitate, produs, produs)
+
+                results.execute(query)
+                results.execute("commit")
+
+                # afiseaza cate produse mai sunt in stoc pe baza ingredientelor
+                query = 'SELECT MIN(FLOOR((SELECT i.stoc_ingredient/r.cantitate_ingr FROM DUAL))) as nr_preparate_disponibile \
+                            FROM Produse p, Retete r, Ingrediente i \
+                            WHERE p.id_produs = r.Produse_id_produs and i.id_ingredient = r.Ingrediente_id_ingr and p.nume_produs=\'%s\' \
+                            GROUP BY p.nume_produs' % produs
+                results.execute(query)
+                res = results.fetchall()
+                print('Preparate disponibile pentru produsul %s: %d' % (produs, res[0][0]))
+
+            if produs_pe_stoc:
                 lbl_succes.show()
+                lbl_succes.setText("Stoc suficient! Comanda plasata cu succes")
             else:
-                lbl_succes.setText("Stoc insuficient")
-
-
-
+                lbl_succes.show()
+                lbl_succes.setText("Stoc insuficient pentru produsul %s" % produsul_indisponibil)
