@@ -134,7 +134,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QListWidget" name="list_view_selectii">
+   <widget class="QListWidget" name="list_widget_selectii">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -172,7 +172,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Selectiile tale</string>
+     <string>Cosul tau</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btn_plaseaza_cmd">
@@ -192,8 +192,8 @@
     <property name="geometry">
      <rect>
       <x>770</x>
-      <y>590</y>
-      <width>151</width>
+      <y>690</y>
+      <width>281</width>
       <height>31</height>
      </rect>
     </property>
@@ -203,14 +203,14 @@
      </font>
     </property>
     <property name="text">
-     <string>Total de platit:</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="lbl_succes">
     <property name="geometry">
      <rect>
-      <x>770</x>
-      <y>690</y>
+      <x>760</x>
+      <y>720</y>
       <width>251</width>
       <height>51</height>
      </rect>
@@ -221,7 +221,20 @@
      </font>
     </property>
     <property name="text">
-     <string>Comanda plasata cu succes</string>
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_delete">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>590</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Sterge selectie</string>
     </property>
    </widget>
   </widget>

@@ -24,7 +24,6 @@ CONN_INFO = {
 }
 CONN_STR = '{user}/{psw}@{host}:{port}/{service}'.format(**CONN_INFO)
 con = cx_Oracle.connect(CONN_STR)
-
 results = con.cursor()
 
 
@@ -48,13 +47,14 @@ class Meniu:
                 list_widget_window.insertItem(row_number, QListWidgetItem(str(data)))
 
     @staticmethod
-    def selection_changed(list_widget_window, table_widget_window, btn_adauga, list_view_selectii, lbl_selectii,
-                          btn_plaseaza_cmd, lbl_total_plata):
+    def selection_changed(list_widget_window, table_widget_window, btn_adauga, list_widget_selectii, lbl_selectii,
+                          btn_plaseaza_cmd, lbl_total_plata, btn_delete):
 
         table_widget_window.clear()
         table_widget_window.show()
         btn_adauga.show()
-        list_view_selectii.show()
+        list_widget_selectii.show()
+        btn_delete.show()
         lbl_selectii.show()
         btn_plaseaza_cmd.show()
         lbl_total_plata.show()
@@ -133,7 +133,7 @@ class Meniu:
                 # verific daca cantitate ingr necesar > stoc ingredient
                 query = 'select cantitate_ingr from retete where produse_id_produs = (select id_produs from produse where nume_produs = \'%s\') \
                     and ingrediente_id_ingr= (select id_ingredient from ingrediente where nume_ingredient = \'%s\')' % (
-                produs, i)
+                    produs, i)
                 results.execute(query)
                 res = results.fetchall()
                 cantitate_ingr = float(res[0][0])
@@ -153,7 +153,8 @@ class Meniu:
                 # update la ingrediente
                 query = 'UPDATE Ingrediente i \
                 SET stoc_ingredient = stoc_ingredient - %d * (SELECT r.cantitate_ingr FROM Retete r WHERE r.Produse_id_produs = (SELECT id_produs FROM Produse WHERE nume_produs = \'%s\') and r.Ingrediente_id_ingr = i.id_ingredient) \
-                WHERE EXISTS (SELECT 1 FROM Retete r WHERE Produse_id_produs = (SELECT id_produs FROM Produse WHERE nume_produs = \'%s\') and r.Ingrediente_id_ingr = i.id_ingredient)' % (cantitate, produs, produs)
+                WHERE EXISTS (SELECT 1 FROM Retete r WHERE Produse_id_produs = (SELECT id_produs FROM Produse WHERE nume_produs = \'%s\') and r.Ingrediente_id_ingr = i.id_ingredient)' % (
+                    cantitate, produs, produs)
 
                 results.execute(query)
                 results.execute("commit")
