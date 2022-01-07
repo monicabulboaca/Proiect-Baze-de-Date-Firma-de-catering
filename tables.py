@@ -3,11 +3,11 @@ import sys
 import cx_Oracle
 from PyQt5.QtWidgets import QTableWidgetItem, QListWidgetItem
 
-stocuri = []
 
 # This is the path to the ORACLE client files
 lib_dir = r'C:\Users\monic\Desktop\AN III\BD\model_tema_de_casa\model_tema_de_casa\instantclient_21_3'
 text = ''
+
 try:
     cx_Oracle.init_oracle_client(lib_dir=lib_dir)
 except Exception as err:
@@ -27,13 +27,7 @@ con = cx_Oracle.connect(CONN_STR)
 results = con.cursor()
 
 
-class Meniu:
-
-    def __init__(self):
-        self.display_window = None
-        self.dialog_box = None
-        self.listWidget_wnd = None
-        self.tableWidget_wnd = None
+class DBConn:
 
     @staticmethod
     def load_data(list_widget_window, nr_meniu):
@@ -49,7 +43,7 @@ class Meniu:
     @staticmethod
     def selection_changed(list_widget_window, table_widget_window, btn_adauga, list_widget_selectii, lbl_selectii,
                           btn_plaseaza_cmd, lbl_total_plata, btn_delete):
-
+        global text
         table_widget_window.clear()
         table_widget_window.show()
         btn_adauga.show()
@@ -60,13 +54,10 @@ class Meniu:
         lbl_total_plata.show()
 
         table_widget_window.setHorizontalHeaderLabels(["Produs", "Pret", "Ingrediente"])
-        header = table_widget_window.horizontalHeader()
-        # header.setSectionResizeMode(0, PyQt5.QtWidgets.QHeaderView.ResizeToContents)
         table_widget_window.setColumnWidth(0, 350)
         table_widget_window.setColumnWidth(1, 10)
         table_widget_window.setColumnWidth(2, 377)
-        # header.setSectionResizeMode(2, PyQt5.QtWidgets.QHeaderView.ResizeToContents)
-        global text
+
         items_text_list = [str(list_widget_window.item(i).text()) for i in range(list_widget_window.count())]
         for item in items_text_list:
             if list_widget_window.currentItem().text() == item:
@@ -83,7 +74,7 @@ class Meniu:
                     table_widget_window.setItem(row_number, 0, QTableWidgetItem(str(row_data[1][0])))
                     table_widget_window.setItem(row_number, 1, QTableWidgetItem(str(row_data[1][1])))
                     nume_produs = str(row_data[1][0])
-                    Meniu.get_ingredients(nume_produs)
+                    DBConn.get_ingredients(nume_produs)
                     table_widget_window.setItem(row_number, 2, QTableWidgetItem(text))
                     row_number += 1
 
@@ -106,11 +97,10 @@ class Meniu:
                 text += str(i)
         return lista_ingr
 
-    def plaseaza_comanda(self, items, lbl_succes):
-        global stocuri
+    def place_order(self, items, lbl_succes):
         for item in items:
             produs = item.split(",")[0]
-            cantitate = int(item.split("buc.")[0].split(", ")[1])
+            amount = int(item.split("buc.")[0].split(", ")[1])
             nr_masa = random.randint(1, 5)
             query = f'INSERT INTO Comenzi(id_comanda, data_comanda, nr_masa) VALUES(NULL,SYSDATE,{nr_masa})'
             results.execute(query)
@@ -136,17 +126,17 @@ class Meniu:
                     produs, i)
                 results.execute(query)
                 res = results.fetchall()
-                cantitate_ingr = float(res[0][0])
-                print('CANTITATE: ' + str(cantitate_ingr))
+                amount_ingr = float(res[0][0])
+                print('CANTITATE: ' + str(amount_ingr))
 
-                if cantitate_ingr > stoc:
+                if amount_ingr > stoc:
                     produs_pe_stoc = False
                     produsul_indisponibil = produs
 
             if produs_pe_stoc:
                 query = 'INSERT INTO produse_comenzi(nr_produse_comandate, produse_nr_produs, comenzi_id_comanda) \
                             VALUES (%d, (SELECT id_produs from produse where nume_produs=\'%s\' ), (SELECT max(id_comanda) from comenzi))' % (
-                    cantitate, produs)
+                    amount, produs)
                 results.execute(query)
                 results.execute("commit")
 
@@ -154,7 +144,7 @@ class Meniu:
                 query = 'UPDATE Ingrediente i \
                 SET stoc_ingredient = stoc_ingredient - %d * (SELECT r.cantitate_ingr FROM Retete r WHERE r.Produse_id_produs = (SELECT id_produs FROM Produse WHERE nume_produs = \'%s\') and r.Ingrediente_id_ingr = i.id_ingredient) \
                 WHERE EXISTS (SELECT 1 FROM Retete r WHERE Produse_id_produs = (SELECT id_produs FROM Produse WHERE nume_produs = \'%s\') and r.Ingrediente_id_ingr = i.id_ingredient)' % (
-                    cantitate, produs, produs)
+                    amount, produs, produs)
 
                 results.execute(query)
                 results.execute("commit")
@@ -167,6 +157,7 @@ class Meniu:
                 results.execute(query)
                 res = results.fetchall()
                 print('Preparate disponibile pentru produsul %s: %d' % (produs, res[0][0]))
+
 
             if produs_pe_stoc:
                 lbl_succes.show()

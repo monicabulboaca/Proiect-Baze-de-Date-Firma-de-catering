@@ -67,7 +67,7 @@
     <string>Cantitate:</string>
    </property>
   </widget>
-  <widget class="QSpinBox" name="spin_box_cantitate">
+  <widget class="QSpinBox" name="spin_box_amount">
    <property name="geometry">
     <rect>
      <x>120</x>

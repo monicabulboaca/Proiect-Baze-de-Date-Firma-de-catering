@@ -188,7 +188,7 @@
      <string>Plaseaza comanda</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl_total_plata">
+   <widget class="QLabel" name="lbl_total_pay">
     <property name="geometry">
      <rect>
       <x>770</x>
