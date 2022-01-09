@@ -14,10 +14,9 @@ INSERT INTO Categorii(nume_categorie, meniuri_nr_meniu) VALUES('Preparate din pe
 INSERT INTO Categorii(nume_categorie, meniuri_nr_meniu) VALUES('Bauturi alcoolice', (SELECT id_meniu FROM meniuri where nume_meniu = 'Meniu bauturi'));
 INSERT INTO Categorii(nume_categorie, meniuri_nr_meniu) VALUES('Bauturi non-alcoolice', (SELECT id_meniu FROM meniuri where nume_meniu = 'Meniu bauturi'));
 
-INSERT INTO Categorii(nume_categorie, meniuri_nr_meniu) VALUES('Torturi', (SELECT id_meniu FROM meniuri where nume_meniu = 'Meniu desert'));
-INSERT INTO Categorii(nume_categorie, meniuri_nr_meniu) VALUES('Prajituri cu caramel', (SELECT id_meniu FROM meniuri where nume_meniu = 'Meniu desert'));
-INSERT INTO Categorii(nume_categorie, meniuri_nr_meniu) VALUES('Prajituri cu ciocolata', (SELECT id_meniu FROM meniuri where nume_meniu = 'Meniu desert'));
+INSERT INTO Categorii(nume_categorie, meniuri_nr_meniu) VALUES('Torturi si prajituri', (SELECT id_meniu FROM meniuri where nume_meniu = 'Meniu desert'));
 INSERT INTO Categorii(nume_categorie, meniuri_nr_meniu) VALUES('Prajituri de post', (SELECT id_meniu FROM meniuri where nume_meniu = 'Meniu desert'));
+
 
 -- Inserare in tabela TIPURI_ALIMENT
 INSERT INTO tipuri_aliment(nume_tip) VALUES('post');
@@ -106,6 +105,10 @@ INSERT INTO Produse(nume_produs, tip_produs, pret, tipuri_aliment_id_tip) VALUES
 INSERT INTO Produse(nume_produs, tip_produs, pret, tipuri_aliment_id_tip) VALUES('Papanasi cu branza', 'preparat', 10, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'dulce'));
 INSERT INTO Produse(nume_produs, tip_produs, pret, tipuri_aliment_id_tip) VALUES('Inghetata', 'preparat', 10, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'dulce'));
 
+INSERT INTO Produse(nume_produs, tip_produs, pret, tipuri_aliment_id_tip) VALUES('Prajitura cu morcov si mere', 'preparat', 18, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'post'));
+INSERT INTO Produse(nume_produs, tip_produs, pret, tipuri_aliment_id_tip) VALUES('Negresa de post', 'preparat', 15, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'post'));
+INSERT INTO Produse(nume_produs, tip_produs, pret, tipuri_aliment_id_tip) VALUES('Tarta cu mere', 'preparat', 17, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'post'));
+
 -- Inserare in tabela CATEGORII_PRODUSE
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Supe si ciorbe' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu preparate')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Supa cu legume'));
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Supe si ciorbe' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu preparate')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Supa cu taitei'));
@@ -170,6 +173,10 @@ INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES(
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Torturi' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu desert')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Clatite cu inghetata'));
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Torturi' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu desert')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Papanasi cu branza'));
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Torturi' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu desert')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Inghetata'));
+
+INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Prajituri de post' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu desert')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Prajitura cu morcov si mere'));
+INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Prajituri de post' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu desert')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Negresa de post'));
+INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Prajituri de post' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu desert')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Tarta cu mere'));
 
 
 -- Inserare in tabela INGREDIENTE
@@ -251,6 +258,7 @@ INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip)
 INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip) VALUES('amestec de fructe', 55, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'fructe'));
 INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip) VALUES('fructe de padure', 15, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'fructe'));
 INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip) VALUES('capsuni', 15, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'fructe'));
+INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip) VALUES('mere', 70, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'fructe'));
 
 
 INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip) VALUES('amandina', 20, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'dulce'));
@@ -391,7 +399,7 @@ INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALU
 INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Pastrav la gratar cu legume'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'amestec de legume'), 0.5);
 INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Pastrav la gratar cu legume'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'pastrav'), 1);
 
-INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Somon afumat'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'file de somon' ), 2);
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Somon afumat'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'somon' ), 2);
 
 INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Macrou la gratar cu mamaliguta si usturoi'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'macrou' ), 2);
 INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Macrou la gratar cu mamaliguta si usturoi'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'malai' ), 1);
@@ -484,6 +492,23 @@ INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALU
 INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Inghetata'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'vanilie' ), 0.5);
 INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Inghetata'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'fructe de padure' ), 0.5);
 INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Inghetata'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'capsuni' ), 0.5);
+
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Tarta cu mere'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'mere' ), 7);
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Tarta cu mere'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'aluat' ), 2);
+
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Negresa de post'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'aluat' ), 2);
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Negresa de post'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'dulceata' ), 2);
+
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Prajitura cu morcov si mere'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'mere' ), 8);
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Prajitura cu morcov si mere'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'morcov' ), 5);
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Prajitura cu morcov si mere'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'aluat' ), 5);
+
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Prajitura Alba ca Zapada'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'aluat' ), 2);
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Prajitura Alba ca Zapada'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'ou' ), 6);
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Prajitura Alba ca Zapada'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'frisca' ), 2);
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Prajitura Alba ca Zapada'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'lapte' ), 0.5);
+
+commit;
 
 -----Inserare in tabela STOCURI---------
 

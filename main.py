@@ -60,14 +60,13 @@ class UiMainWindow(QMainWindow):
 
     def delete_selection(self, list_widget_selectii, lbl_total_pay):
         global sum_price
-        my_sel_items = [str(list_widget_selectii.item(i).text()) for i in range(list_widget_selectii.count())]
-        items = []
         prices = []
-        for i in range(len(my_sel_items)):
-            items.append(my_sel_items[i].split(",")[0])
-            prices.append(my_sel_items[i].split(":")[1].strip())
+        for i in range(len(items)):
+            prices.append(items[i].split(":")[1].strip())
         try:
             curr_row = list_widget_selectii.currentRow()
+            items.pop(curr_row)
+            print(items)
             sum_price -= float(prices[curr_row])
             list_widget_selectii.takeItem(int(curr_row))
             self.update_lbl_total_topay(lbl_total_pay)
@@ -121,8 +120,7 @@ class UiPopUpAddToCart(QDialog):
     def add_selection(self, list_widget_selectii, lbl_total_pay):
         global text, price, sum_price
         total_price = float(price) * float(amount)
-
-        text = str(current_item) + ', ' + str(amount) + ' buc.' + '\t\t pret: ' + str(total_price)
+        text = str(current_item) + ', ' + str(amount) + ' buc.' + ', pret: ' + str(total_price)
         sum_price += total_price
         if amount != 0:
             list_widget_selectii.addItem(str(text))
