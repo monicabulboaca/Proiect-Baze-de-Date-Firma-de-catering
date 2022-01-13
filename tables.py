@@ -61,9 +61,14 @@ class DBConn:
         items_text_list = [str(list_widget_window.item(i).text()) for i in range(list_widget_window.count())]
         for item in items_text_list:
             if list_widget_window.currentItem().text() == item:
+                # query = 'select p.nume_produs, p.pret from categorii_produse cp, produse p \
+                # where cp.categorii_nr_categorie= (select id_categorie from categorii where \
+                # nume_categorie=\'%s\') and cp.produse_nr_produs = p.id_produs and p.stare = \'ACTIV\'' % item
+
                 query = 'select p.nume_produs, p.pret from categorii_produse cp, produse p \
                 where cp.categorii_nr_categorie= (select id_categorie from categorii where \
                 nume_categorie=\'%s\') and cp.produse_nr_produs = p.id_produs and p.stare = \'ACTIV\'' % item
+
                 results.execute(query)
                 r = results.fetchall()
                 table_widget_window.setRowCount(0)
@@ -119,6 +124,9 @@ class DBConn:
                     # ingredientele necesare pt produs
                     ingr = self.get_ingredients(produs)
 
+                    # nr de produse disponibile pe baza ingredientelor
+                    nr_prod_disponibile = self.nr_produse_disponibile(produs)
+
                     # verific stocul pentru fiecare ingredient
                     for i in ingr:
                         print()
@@ -134,14 +142,13 @@ class DBConn:
                         amount_ingr = self.get_cantitate_ingredient(i, produs)
                         print('CANTITATE: ' + str(amount_ingr))
 
-                        # nr de produse disponibile pe baza ingredientelor
-                        nr_prod_disponibile = self.nr_produse_disponibile(produs)
 
                         # verific daca cantitate ingr necesar > stoc ingredient
-                        if amount_ingr > stoc:
-                            self.update_stare_produs(produs)
+                        if amount_ingr > stoc or stoc == 0:
+                            # self.update_stare_produs(produs)
                             lbl_succes.show()
-                            lbl_succes.setText("Stoc insuficient pentru produsul %s \n Preparate disponibile: %d" % (produs, nr_prod_disponibile))
+                            lbl_succes.setText("Stoc insuficient pentru produsul %s " %
+                                produs)
                             return
                 else:
                     stoc_produs = self.get_stoc_produs(produs)
@@ -153,7 +160,8 @@ class DBConn:
                     if amount > stoc_produs:
                         self.update_stare_produs(produs)
                         lbl_succes.show()
-                        lbl_succes.setText("Stoc insuficient pentru produsul %s \n Stoc disponibil: %f" % (produs, stoc_produs))
+                        lbl_succes.setText(
+                            "Stoc insuficient pentru produsul %s \n Stoc disponibil: %f" % (produs, stoc_produs))
                         return
 
             else:
@@ -207,7 +215,7 @@ class DBConn:
         query = 'select stoc_ingredient from ingrediente where nume_ingredient=\'%s\'' % ingredient
         results.execute(query)
         res = results.fetchall()
-        stoc = int(res[0][0])
+        stoc = float(res[0][0])
         return stoc
 
     def get_cantitate_ingredient(self, ingredient, produs):

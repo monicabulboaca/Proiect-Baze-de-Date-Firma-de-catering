@@ -109,6 +109,8 @@ INSERT INTO Produse(nume_produs, tip_produs, pret, tipuri_aliment_id_tip) VALUES
 INSERT INTO Produse(nume_produs, tip_produs, pret, tipuri_aliment_id_tip) VALUES('Negresa de post', 'preparat', 15, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'post'));
 INSERT INTO Produse(nume_produs, tip_produs, pret, tipuri_aliment_id_tip) VALUES('Tarta cu mere', 'preparat', 17, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'post'));
 
+INSERT INTO Produse(nume_produs, tip_produs, pret, tipuri_aliment_id_tip) VALUES('Sorin', 'preparat', 17, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'peste'));
+
 -- Inserare in tabela CATEGORII_PRODUSE
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Supe si ciorbe' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu preparate')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Supa cu legume'));
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Supe si ciorbe' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu preparate')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Supa cu taitei'));
@@ -116,7 +118,10 @@ INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES(
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Supe si ciorbe' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu preparate')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Ciorba de burta'));
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Supe si ciorbe' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu preparate')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Ciorba de perisoare'));
 
+INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Salate' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu preparate')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Sorin'));
 
+
+commit;
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Paste' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu preparate')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Paste carbonara'));
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Paste' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu preparate')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Paste bolognese'));
 INSERT INTO categorii_produse(Categorii_nr_categorie, Produse_nr_produs) VALUES((SELECT id_categorie FROM Categorii WHERE nume_categorie = 'Paste' and meniuri_nr_meniu = (SELECT id_meniu FROM Meniuri WHERE nume_meniu = 'Meniu preparate')), (SELECT id_produs FROM Produse WHERE nume_produs = 'Paste tagliatelle cu ciuperci'));
@@ -291,7 +296,14 @@ INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip)
 INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip) VALUES('dulceata', 25, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'altele'));
 INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip) VALUES('inghetata', 25, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'altele'));
 
+INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip) VALUES('crap', 0.25, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'peste'));
+INSERT INTO Ingrediente(nume_ingredient, stoc_ingredient, tipuri_aliment_id_tip) VALUES('porumb', 0.35, (SELECT id_tip FROM tipuri_aliment WHERE nume_tip = 'legume'));
+
 -- Inserare in tabela RETETE
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Sorin'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'crap'), 0.15);
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Sorin'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'porumb'), 0.15);
+INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Sorin'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'masline kalamata'), 8);
+
 
 INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Supa cu legume'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'amestec de legume'), 1);
 
@@ -508,6 +520,8 @@ INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALU
 INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Prajitura Alba ca Zapada'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'frisca' ), 2);
 INSERT INTO Retete (Produse_id_produs, Ingrediente_id_ingr, cantitate_ingr) VALUES((SELECT id_produs FROM Produse WHERE nume_produs = 'Prajitura Alba ca Zapada'), (SELECT id_ingredient FROM Ingrediente WHERE nume_ingredient = 'lapte' ), 0.5);
 
+
+
 commit;
 
 -----Inserare in tabela STOCURI---------
@@ -518,4 +532,22 @@ INSERT INTO stocuri_produs(stoc_produs, Produse_id_produs) VALUES(50, (SELECT id
 INSERT INTO stocuri_produs(stoc_produs, Produse_id_produs) VALUES(25, (SELECT id_produs FROM Produse WHERE nume_produs = 'Fanta 330 ml'));
 INSERT INTO stocuri_produs(stoc_produs, Produse_id_produs) VALUES(20, (SELECT id_produs FROM Produse WHERE nume_produs = 'Pepsi 330 ml'));
 
+
+update ingrediente 
+    set stoc_ingredient = 20 where nume_ingredient = 'cascaval vegetal';
+    
+update ingrediente 
+    set stoc_ingredient = 10 where nume_ingredient = 'bacon';
+
+update ingrediente 
+    set stoc_ingredient = 8 where nume_ingredient = 'masline kalamata';
+ 
+update ingrediente 
+    set stoc_ingredient = 0.35 where nume_ingredient = 'crap';
+
+update ingrediente 
+    set stoc_ingredient = 0.35 where nume_ingredient = 'porumb';
+
+update produse
+    set stare = 'ACTIV' where nume_produs='Sorin';
 commit;
